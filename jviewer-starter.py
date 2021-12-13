@@ -33,6 +33,7 @@ mainClass = "com.ami.kvm.jviewer.JViewer"
 
 from urllib.request import urlopen, urlretrieve, Request
 from urllib.parse import urlencode
+from urllib.error import HTTPError
 from http.client import IncompleteRead
 
 import sys, os, re, subprocess, platform, getpass, zipfile
@@ -60,11 +61,18 @@ def update_jars(server):
         jar_path = os.path.join(path, jar)
         if not os.path.exists(jar_path):
             print("downloading %s -> %s" % (base + jar, jar_path))
-            urlretrieve(base + jar, jar_path)
-            if jar == natives:
-                print("extracting %s" % jar_path)
-                with zipfile.ZipFile(jar_path, 'r') as natives_jar:
-                    natives_jar.extractall(path)
+            try:
+                urlretrieve(base + jar, jar_path)
+                if jar == natives:
+                    print("extracting %s" % jar_path)
+                    with zipfile.ZipFile(jar_path, 'r') as natives_jar:
+                        natives_jar.extractall(path)
+            except HTTPError as e:
+                if jar == "JViewer-SOC.jar" and e.code == 404:
+                    print("JViewer-SOC.jar not available")
+                    pass
+                else:
+                    raise
 
     return path
 
