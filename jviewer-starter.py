@@ -31,18 +31,9 @@ jnlpUrl = "http://{0}/Java/jviewer.jnlp?EXTRNIP={0}&JNLPSTR=JViewer"
 jarBase = "http://{0}/Java/release/"
 mainClass = "com.ami.kvm.jviewer.JViewer"
 
-try:
-    # Python 3
-    from urllib.request import urlopen, urlretrieve, Request
-    from urllib.parse import urlencode
-    from http.client import IncompleteRead
-except ImportError:
-    # Python 2
-    from urllib import urlencode, urlretrieve
-    from urllib2 import urlopen, Request
-    class IncompleteRead(object):
-        pass
-    input = raw_input
+from urllib.request import urlopen, urlretrieve, Request
+from urllib.parse import urlencode
+from http.client import IncompleteRead
 
 import sys, os, re, subprocess, platform, getpass, zipfile
 
